@@ -102,6 +102,32 @@
       color: #666;
       margin-bottom: 4px;
     }
+    .check-btn {
+      display: block;
+      width: 100%;
+      margin-top: 8px;
+      padding: 7px 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .check-btn.mark {
+      background: #28a745;
+      color: #fff;
+    }
+    .check-btn.mark:hover {
+      background: #218838;
+    }
+    .check-btn.unmark {
+      background: #6c757d;
+      color: #fff;
+    }
+    .check-btn.unmark:hover {
+      background: #5a6268;
+    }
     .loading {
       position: absolute;
       top: 50%;
@@ -156,6 +182,73 @@
     let allData = null;
     let map = null;
     let markersLayer = null;
+    let markerByRow = {};
+    let pointByRow = {};
+
+    const STORAGE_KEY = 'map_checked_rows';
+
+    function loadCheckedSet() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return new Set();
+        const arr = JSON.parse(raw);
+        return new Set(Array.isArray(arr) ? arr : []);
+      } catch (e) {
+        return new Set();
+      }
+    }
+
+    function saveCheckedSet(set) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(set)));
+      } catch (e) {
+        console.warn('localStorage 保存失敗', e);
+      }
+    }
+
+    let checkedSet = loadCheckedSet();
+
+    function isChecked(row) {
+      return checkedSet.has(row);
+    }
+
+    function setChecked(row, value) {
+      if (value) {
+        checkedSet.add(row);
+      } else {
+        checkedSet.delete(row);
+      }
+      saveCheckedSet(checkedSet);
+
+      const marker = markerByRow[row];
+      if (marker) {
+        const color = value ? '#28a745' : '#ffc107';
+        marker.setStyle({ fillColor: color });
+      }
+    }
+
+    window.toggleCheck = function (row) {
+      const next = !isChecked(row);
+      setChecked(row, next);
+
+      const marker = markerByRow[row];
+      const point = pointByRow[row];
+      if (marker && point) {
+        marker.setPopupContent(makePopupHtml(point));
+      }
+
+      // 件数表示を更新
+      const select = document.getElementById('prefSelect');
+      if (select.value && allData && allData.data[select.value]) {
+        const points = allData.data[select.value];
+        let checkedCount = 0;
+        points.forEach(function (p) {
+          if (isChecked(p.row)) checkedCount++;
+        });
+        document.getElementById('countInfo').textContent =
+          '地点数: ' + points.length + '（チェック済: ' + checkedCount + '）';
+      }
+    };
 
     function initMap() {
       map = L.map('map').setView([15.0, 100.5], 6);
@@ -168,8 +261,8 @@
       legend.onAdd = function () {
         const div = L.DomUtil.create('div', 'legend');
         div.innerHTML =
-          '<i style="background:#28a745"></i> チェック済（Google写真リンクあり）<br>' +
-          '<i style="background:#ffc107"></i> 未チェック（ローカル画像）';
+          '<i style="background:#28a745"></i> チェック済（見た）<br>' +
+          '<i style="background:#ffc107"></i> 未チェック（未確認）';
         return div;
       };
       legend.addTo(map);
@@ -177,8 +270,46 @@
       markersLayer = L.layerGroup().addTo(map);
     }
 
+    function makePopupHtml(p) {
+      const checked = isChecked(p.row);
+
+      var tnameHtml = p.tname
+        ? '<div class="tname">' + escapeHtml(p.tname) + '</div>'
+        : '';
+
+      var badge = checked
+        ? '<span class="badge badge-checked">✓ チェック済</span>'
+        : '<span class="badge badge-unchecked">未チェック</span>';
+
+      var imgHtml = '';
+      if (p.thumb) {
+        imgHtml =
+          '<a href="' + escapeAttr(p.link) + '" target="_blank" rel="noopener">' +
+          '<img class="popup-img" src="' + escapeAttr(p.thumb) + '" alt="' + escapeAttr(p.name) + '" ' +
+          'loading="lazy" onerror="this.style.display=\'none\'">' +
+          '</a>';
+      }
+
+      var btnClass = checked ? 'unmark' : 'mark';
+      var btnText = checked ? 'チェックを外す' : 'チェックする（見た）';
+
+      return (
+        '<div class="popup-title">' + escapeHtml(p.name) + '</div>' +
+        tnameHtml +
+        '<div class="popup-meta">' +
+          '<span>行番号: ' + p.row + '</span>' +
+          '<span>' + escapeHtml(p.datetime) + '</span>' +
+        '</div>' +
+        '<div style="margin-bottom:6px;">' + badge + '</div>' +
+        imgHtml +
+        '<button class="check-btn ' + btnClass + '" onclick="toggleCheck(' + p.row + ')">' + btnText + '</button>'
+      );
+    }
+
     function showMarkers(pref) {
       markersLayer.clearLayers();
+      markerByRow = {};
+      pointByRow = {};
 
       if (!pref || !allData || !allData.data[pref]) {
         document.getElementById('countInfo').textContent = '';
@@ -187,12 +318,14 @@
       }
 
       const points = allData.data[pref];
-      document.getElementById('countInfo').textContent = '地点数: ' + points.length;
-
+      let checkedCount = 0;
       const bounds = [];
 
       points.forEach(function (p) {
-        const color = p.checked ? '#28a745' : '#ffc107';
+        const checked = isChecked(p.row);
+        if (checked) checkedCount++;
+
+        const color = checked ? '#28a745' : '#ffc107';
         const marker = L.circleMarker([p.lat, p.lon], {
           radius: 7,
           fillColor: color,
@@ -202,37 +335,16 @@
           fillOpacity: 0.9
         });
 
-        var tnameHtml = p.tname
-          ? '<div class="tname">' + escapeHtml(p.tname) + '</div>'
-          : '';
-
-        var badge = p.checked
-          ? '<span class="badge badge-checked">✓ チェック済</span>'
-          : '<span class="badge badge-unchecked">ローカル</span>';
-
-        var imgHtml = '';
-        if (p.thumb) {
-          imgHtml =
-            '<a href="' + escapeAttr(p.link) + '" target="_blank" rel="noopener">' +
-            '<img class="popup-img" src="' + escapeAttr(p.thumb) + '" alt="' + escapeAttr(p.name) + '" ' +
-            'loading="lazy" onerror="this.style.display=\'none\'">' +
-            '</a>';
-        }
-
-        var popupContent =
-          '<div class="popup-title">' + escapeHtml(p.name) + '</div>' +
-          tnameHtml +
-          '<div class="popup-meta">' +
-            '<span>行番号: ' + p.row + '</span>' +
-            '<span>' + escapeHtml(p.datetime) + '</span>' +
-          '</div>' +
-          '<div style="margin-bottom:6px;">' + badge + '</div>' +
-          imgHtml;
-
-        marker.bindPopup(popupContent, { maxWidth: 300 });
+        marker.bindPopup(makePopupHtml(p), { maxWidth: 300 });
         marker.addTo(markersLayer);
+
+        markerByRow[p.row] = marker;
+        pointByRow[p.row] = p;
         bounds.push([p.lat, p.lon]);
       });
+
+      document.getElementById('countInfo').textContent =
+        '地点数: ' + points.length + '（チェック済: ' + checkedCount + '）';
 
       if (bounds.length > 0) {
         map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
@@ -259,8 +371,6 @@
         }
         var text = await res.text();
         console.log('data.json 取得サイズ:', text.length, '文字');
-        console.log('先頭200文字:', text.slice(0, 200));
-        console.log('末尾100文字:', text.slice(-100));
 
         try {
           allData = JSON.parse(text);
@@ -273,8 +383,6 @@
         }
 
         var keys = Object.keys(allData);
-        console.log('取得したキー:', keys);
-
         if (!allData.prefs || !allData.data) {
           throw new Error('形式が不正です。必要なキー: prefs, data ／ 実際のキー: [' + keys.join(', ') + ']');
         }
@@ -295,7 +403,7 @@
         });
 
         document.getElementById('loading').style.display = 'none';
-        console.log('データ読み込み完了: ' + allData.prefs.length + ' 県');
+        console.log('データ読み込み完了: ' + allData.prefs.length + ' 県 / チェック済: ' + checkedSet.size + ' 件');
       } catch (e) {
         document.getElementById('loading').textContent = 'エラー: ' + e.message;
         console.error(e);
