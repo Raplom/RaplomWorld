@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang='ja'>
+<head>
+<meta charset='utf-8'>
+<meta property="og:title" content="2005年4月8日の地図日記">
+<meta property="og:type" content="website">
+<title>2005年4月8日の地図日記</title>
+<link rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css' />
+<script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'></script>
+<style>
+    body { display: flex; height: 100vh; margin: 0; background: #111; font-family: sans-serif; }
+    #map { flex: 1; }
+    #sidebar { width: 200px; overflow-y: auto; background: #111; padding: 10px; border-left: 1px solid #333; }
+    .photo-thumb { margin-bottom: 10px; cursor: pointer; border: 2px solid transparent; min-height: 40px; background: #222; }
+    .photo-thumb:hover { border-color: #007bff; }
+    .photo-thumb img { width: 100%; border-radius: 4px; display: block; }
+    .thumb-label { color: #ccc; font-size: 12px; text-align: center; padding: 4px 2px; word-break: break-word; }
+</style>
+</head>
+<body>
+<div id='map'></div>
+<div id='sidebar'><div style='color:white; text-align:center; margin-bottom:15px;'>2005年4月8日</div><div class='photo-thumb'><img src='https://lek3map.github.io/thailand/picture/aruki.jpg' title='交通手段' alt='交通手段' onerror="this.style.display='none'"></div><div class='photo-thumb' onclick='moveToMarker(0)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05040810.jpg' title='Kuchinarai Police Station' alt='Kuchinarai Police Station' onerror="this.style.display='none'"><div class='thumb-label'>Kuchinarai Police Station</div></div><div class='photo-thumb' onclick='moveToMarker(1)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05040817.jpg' title='Phon Thong Police Station' alt='Phon Thong Police Station' onerror="this.style.display='none'"><div class='thumb-label'>Phon Thong Police Station</div></div></div>
+<script>
+var map = L.map('map');
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+var markers = {};
+var markerGroup = L.featureGroup().addTo(map);
+var pathPoints = [];
+
+var icon_starr_png = L.icon({
+    iconUrl: 'https://lek3map.github.io/thailand/icon/starr.png',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30]
+});
+markers[0] = L.marker([16.537381, 104.053928], {icon: icon_starr_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Kuchinarai Police Station</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/05040810.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05040810.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>カラシン</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=16.537381,104.053928' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=16.537381,104.053928&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[1] = L.marker([16.299947, 103.978922], {icon: icon_starr_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Phon Thong Police Station</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/05040817.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05040817.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>ロイエット</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=16.299947,103.978922' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=16.299947,103.978922&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+
+if (pathPoints.length > 0) {
+    var polyline = L.polyline(pathPoints, {color: '#ff0000', weight: 4, opacity: 0.8}).addTo(map);
+    map.fitBounds(polyline.getBounds(), {padding: [30, 30]});
+} else if (Object.keys(markers).length > 0) {
+    map.fitBounds(markerGroup.getBounds(), {padding: [50, 50]});
+} else {
+    map.setView([13.7563, 100.5018], 6);
+}
+
+function moveToMarker(id) { 
+    var m = markers[id]; 
+    if(m) { map.flyTo(m.getLatLng(), 15); m.openPopup(); } 
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang='ja'>
+<head>
+<meta charset='utf-8'>
+<meta property="og:title" content="2005年3月19日の地図日記">
+<meta property="og:type" content="website">
+<title>2005年3月19日の地図日記</title>
+<link rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css' />
+<script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'></script>
+<style>
+    body { display: flex; height: 100vh; margin: 0; background: #111; font-family: sans-serif; }
+    #map { flex: 1; }
+    #sidebar { width: 200px; overflow-y: auto; background: #111; padding: 10px; border-left: 1px solid #333; }
+    .photo-thumb { margin-bottom: 10px; cursor: pointer; border: 2px solid transparent; min-height: 40px; background: #222; }
+    .photo-thumb:hover { border-color: #007bff; }
+    .photo-thumb img { width: 100%; border-radius: 4px; display: block; }
+    .thumb-label { color: #ccc; font-size: 12px; text-align: center; padding: 4px 2px; word-break: break-word; }
+</style>
+</head>
+<body>
+<div id='map'></div>
+<div id='sidebar'><div style='color:white; text-align:center; margin-bottom:15px;'>2005年3月19日</div><div class='photo-thumb'><img src='https://lek3map.github.io/thailand/picture/aruki.jpg' title='交通手段' alt='交通手段' onerror="this.style.display='none'"></div><div class='photo-thumb' onclick='moveToMarker(0)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05031909.jpg' title='Post Office' alt='Post Office' onerror="this.style.display='none'"><div class='thumb-label'>Post Office</div></div><div class='photo-thumb' onclick='moveToMarker(1)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05031913.jpg' title='Chaloem Phra Kiat National Library' alt='Chaloem Phra Kiat National Library' onerror="this.style.display='none'"><div class='thumb-label'>Chaloem Phra Kiat National Library</div></div><div class='photo-thumb' onclick='moveToMarker(2)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05031918.jpg' title='Lak Muang' alt='Lak Muang' onerror="this.style.display='none'"><div class='thumb-label'>Lak Muang</div></div><div class='photo-thumb' onclick='moveToMarker(3)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05031972.jpg' title='Lak Muang' alt='Lak Muang' onerror="this.style.display='none'"><div class='thumb-label'>Lak Muang</div></div><div class='photo-thumb' onclick='moveToMarker(4)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05031979.jpg' title='Fountain Rotary' alt='Fountain Rotary' onerror="this.style.display='none'"><div class='thumb-label'>Fountain Rotary</div></div><div class='photo-thumb' onclick='moveToMarker(5)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05031980.jpg' title='Post Office' alt='Post Office' onerror="this.style.display='none'"><div class='thumb-label'>Post Office</div></div></div>
+<script>
+var map = L.map('map');
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+var markers = {};
+var markerGroup = L.featureGroup().addTo(map);
+var pathPoints = [];
+
+var icon_funsui_png = L.icon({
+    iconUrl: 'https://lek3map.github.io/thailand/icon/funsui.png',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30]
+});
+var icon_lakmuang_png = L.icon({
+    iconUrl: 'https://lek3map.github.io/thailand/icon/lakmuang.png',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30]
+});
+var icon_postbox_png = L.icon({
+    iconUrl: 'https://lek3map.github.io/thailand/icon/postbox.png',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30]
+});
+var icon_yakata_png = L.icon({
+    iconUrl: 'https://lek3map.github.io/thailand/icon/yakata.png',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30]
+});
+markers[0] = L.marker([17.407803, 104.785473], {icon: icon_postbox_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Post Office</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/05031909.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05031909.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>ナコンパノム</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=17.407803,104.785473' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=17.407803,104.785473&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[1] = L.marker([17.408499, 104.77979], {icon: icon_yakata_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Chaloem Phra Kiat National Library</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/05031913.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05031913.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>ナコンパノム</div><div style='text-align:left; margin-top:8px;'>今は図書館として使われている</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=17.408499,104.77979' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=17.408499,104.77979&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[2] = L.marker([17.408156, 104.780538], {icon: icon_lakmuang_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Lak Muang</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/05031918.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05031918.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>ナコンパノム</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=17.408156,104.780538' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=17.408156,104.780538&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[3] = L.marker([16.543312, 104.726712], {icon: icon_lakmuang_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Lak Muang</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/05031972.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05031972.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>ムクダハン</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=16.543312,104.726712' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=16.543312,104.726712&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[4] = L.marker([16.541328, 104.729104], {icon: icon_funsui_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Fountain Rotary</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/05031979.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05031979.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>ムクダハン</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=16.541328,104.729104' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=16.541328,104.729104&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[5] = L.marker([16.541533, 104.728745], {icon: icon_postbox_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Post Office</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/05031980.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05031980.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>ムクダハン</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=16.541533,104.728745' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=16.541533,104.728745&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+
+if (pathPoints.length > 0) {
+    var polyline = L.polyline(pathPoints, {color: '#ff0000', weight: 4, opacity: 0.8}).addTo(map);
+    map.fitBounds(polyline.getBounds(), {padding: [30, 30]});
+} else if (Object.keys(markers).length > 0) {
+    map.fitBounds(markerGroup.getBounds(), {padding: [50, 50]});
+} else {
+    map.setView([13.7563, 100.5018], 6);
+}
+
+function moveToMarker(id) { 
+    var m = markers[id]; 
+    if(m) { map.flyTo(m.getLatLng(), 15); m.openPopup(); } 
+}
+</script>
+</body>
+</html>

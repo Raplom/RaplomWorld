@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang='ja'>
+<head>
+<meta charset='utf-8'>
+<meta property="og:title" content="2005年12月6日の地図日記">
+<meta property="og:type" content="website">
+<title>2005年12月6日の地図日記</title>
+<link rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css' />
+<script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'></script>
+<style>
+    body { display: flex; height: 100vh; margin: 0; background: #111; font-family: sans-serif; }
+    #map { flex: 1; }
+    #sidebar { width: 200px; overflow-y: auto; background: #111; padding: 10px; border-left: 1px solid #333; }
+    .photo-thumb { margin-bottom: 10px; cursor: pointer; border: 2px solid transparent; min-height: 40px; background: #222; }
+    .photo-thumb:hover { border-color: #007bff; }
+    .photo-thumb img { width: 100%; border-radius: 4px; display: block; }
+    .thumb-label { color: #ccc; font-size: 12px; text-align: center; padding: 4px 2px; word-break: break-word; }
+</style>
+</head>
+<body>
+<div id='map'></div>
+<div id='sidebar'><div style='color:white; text-align:center; margin-bottom:15px;'>2005年12月6日</div><div class='photo-thumb'><img src='https://lek3map.github.io/thailand/picture/aruki.jpg' title='交通手段' alt='交通手段' onerror="this.style.display='none'"></div><div class='photo-thumb' onclick='moveToMarker(0)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051206005.jpg' title='Street Lamp' alt='Street Lamp' onerror="this.style.display='none'"><div class='thumb-label'>Street Lamp</div></div><div class='photo-thumb' onclick='moveToMarker(1)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051206013.jpg' title='Parian Pier' alt='Parian Pier' onerror="this.style.display='none'"><div class='thumb-label'>Parian Pier</div></div><div class='photo-thumb' onclick='moveToMarker(2)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051206032.jpg' title='Koh Sukorn Pier' alt='Koh Sukorn Pier' onerror="this.style.display='none'"><div class='thumb-label'>Koh Sukorn Pier</div></div><div class='photo-thumb' onclick='moveToMarker(3)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051206073.jpg' title='Koh Sukorn' alt='Koh Sukorn' onerror="this.style.display='none'"><div class='thumb-label'>Koh Sukorn</div></div></div>
+<script>
+var map = L.map('map');
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+var markers = {};
+var markerGroup = L.featureGroup().addTo(map);
+var pathPoints = [];
+
+var icon_fune_png = L.icon({
+    iconUrl: 'https://lek3map.github.io/thailand/icon/fune.png',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30]
+});
+var icon_gaitou_png = L.icon({
+    iconUrl: 'https://lek3map.github.io/thailand/icon/gaitou.png',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30]
+});
+var icon_starr_png = L.icon({
+    iconUrl: 'https://lek3map.github.io/thailand/icon/starr.png',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30]
+});
+markers[0] = L.marker([7.554686, 99.605194], {icon: icon_gaitou_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Street Lamp</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/051206005.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051206005.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>トラン</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=7.554686,99.605194' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=7.554686,99.605194&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[1] = L.marker([7.167077, 99.682678], {icon: icon_fune_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Parian Pier</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/051206013.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051206013.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>トラン</div><div style='text-align:left; margin-top:8px;'>パリアン桟橋としたが正式にはもっと長ったらしい名がある、ここからスコーン島への船が出ているのだが、海へ出るまでけっこう長い時間走る。</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=7.167077,99.682678' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=7.167077,99.682678&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[2] = L.marker([7.113924, 99.583147], {icon: icon_fune_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Koh Sukorn Pier</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/051206032.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051206032.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>トラン</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=7.113924,99.583147' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=7.113924,99.583147&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[3] = L.marker([7.09723, 99.565401], {icon: icon_starr_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Koh Sukorn<br>เกาะสุกร</h3><a href='https://photos.app.goo.gl/mGBRcxCF3EUmRvoq9' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051206073.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>トラン</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=7.09723,99.565401' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=7.09723,99.565401&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+
+if (pathPoints.length > 0) {
+    var polyline = L.polyline(pathPoints, {color: '#ff0000', weight: 4, opacity: 0.8}).addTo(map);
+    map.fitBounds(polyline.getBounds(), {padding: [30, 30]});
+} else if (Object.keys(markers).length > 0) {
+    map.fitBounds(markerGroup.getBounds(), {padding: [50, 50]});
+} else {
+    map.setView([13.7563, 100.5018], 6);
+}
+
+function moveToMarker(id) { 
+    var m = markers[id]; 
+    if(m) { map.flyTo(m.getLatLng(), 15); m.openPopup(); } 
+}
+</script>
+</body>
+</html>

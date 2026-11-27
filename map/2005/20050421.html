@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang='ja'>
+<head>
+<meta charset='utf-8'>
+<meta property="og:title" content="2005年4月21日の地図日記">
+<meta property="og:type" content="website">
+<title>2005年4月21日の地図日記</title>
+<link rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css' />
+<script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'></script>
+<style>
+    body { display: flex; height: 100vh; margin: 0; background: #111; font-family: sans-serif; }
+    #map { flex: 1; }
+    #sidebar { width: 200px; overflow-y: auto; background: #111; padding: 10px; border-left: 1px solid #333; }
+    .photo-thumb { margin-bottom: 10px; cursor: pointer; border: 2px solid transparent; min-height: 40px; background: #222; }
+    .photo-thumb:hover { border-color: #007bff; }
+    .photo-thumb img { width: 100%; border-radius: 4px; display: block; }
+    .thumb-label { color: #ccc; font-size: 12px; text-align: center; padding: 4px 2px; word-break: break-word; }
+</style>
+</head>
+<body>
+<div id='map'></div>
+<div id='sidebar'><div style='color:white; text-align:center; margin-bottom:15px;'>2005年4月21日</div><div class='photo-thumb'><img src='https://lek3map.github.io/thailand/picture/aruki.jpg' title='交通手段' alt='交通手段' onerror="this.style.display='none'"></div><div class='photo-thumb' onclick='moveToMarker(0)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05042103.jpg' title='Central Post Office' alt='Central Post Office' onerror="this.style.display='none'"><div class='thumb-label'>Central Post Office</div></div><div class='photo-thumb' onclick='moveToMarker(1)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05042107.jpg' title='Democracy Monument' alt='Democracy Monument' onerror="this.style.display='none'"><div class='thumb-label'>Democracy Monument</div></div><div class='photo-thumb' onclick='moveToMarker(2)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05042114.jpg' title='October 14, 1973 Monument' alt='October 14, 1973 Monument' onerror="this.style.display='none'"><div class='thumb-label'>October 14, 1973 Monument</div></div><div class='photo-thumb' onclick='moveToMarker(3)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05042131.jpg' title='Lak Muang' alt='Lak Muang' onerror="this.style.display='none'"><div class='thumb-label'>Lak Muang</div></div></div>
+<script>
+var map = L.map('map');
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+var markers = {};
+var markerGroup = L.featureGroup().addTo(map);
+var pathPoints = [];
+
+var icon_lakmuang_png = L.icon({
+    iconUrl: 'https://lek3map.github.io/thailand/icon/lakmuang.png',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30]
+});
+var icon_monument_png = L.icon({
+    iconUrl: 'https://lek3map.github.io/thailand/icon/monument.png',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30]
+});
+var icon_postbox_png = L.icon({
+    iconUrl: 'https://lek3map.github.io/thailand/icon/postbox.png',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30]
+});
+markers[0] = L.marker([13.727092, 100.515702], {icon: icon_postbox_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Central Post Office</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/05042103.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05042103.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>バンコク</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=13.727092,100.515702' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=13.727092,100.515702&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[1] = L.marker([13.756713, 100.501859], {icon: icon_monument_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Democracy Monument<br>อนุสวรีย์ประชาธิปไตย</h3><a href='https://photos.app.goo.gl/FvFEbmmRbGB4brF7A' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05042107.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>バンコク</div><div style='text-align:left; margin-top:8px;'>民主記念塔：1932年6月24日にタイ王国で勃発した革命は、タイを絶対君主制から立憲君主制へと移行させた、その記念として造られた。</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=13.756713,100.501859' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=13.756713,100.501859&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[2] = L.marker([13.756841, 100.499175], {icon: icon_monument_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>October 14, 1973 Monument<br>อนุสรณ์สถาน 14 ตุลา</h3><a href='https://photos.app.goo.gl/UedNHB1B4zmE3dM66' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05042114.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>バンコク</div><div style='text-align:left; margin-top:8px;'>73年10月14日記念碑：血の日曜日、タマサート大学の学生が民主化を求めデモを行い、徐々に他の大学や学校から運動に加わり始め、タマサートの学生セークサーン率いる武装した職業訓練校生が「政府が鎮圧に来る」というデマを聞きチットラダー宮殿へ向けて行進、ラーチャダムヌーン通りで政府の警官隊と衝突、暴動に発展し、兵隊まで導入され死者を出す惨事になった、その結果タノムは国外へ逃亡、国王の学生への支持と、陸軍最高司令官の鎮圧への不参加などから、タノム政権は崩壊、タマサート大学の学長のサンヤーによる内閣が成立し、翌年の仏歴2517年憲法が制定される。その後総選挙によって民主的な文民内閣が登場した</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=13.756841,100.499175' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=13.756841,100.499175&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[3] = L.marker([13.752824, 100.494213], {icon: icon_lakmuang_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Lak Muang</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/05042131.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/05042131.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>バンコク</div><div style='text-align:left; margin-top:8px;'>長い方はラーマ1世が1782年4月21日午前6時45分に建立したもの、短い方はラーマ4世が建立したもの</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=13.752824,100.494213' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=13.752824,100.494213&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+
+if (pathPoints.length > 0) {
+    var polyline = L.polyline(pathPoints, {color: '#ff0000', weight: 4, opacity: 0.8}).addTo(map);
+    map.fitBounds(polyline.getBounds(), {padding: [30, 30]});
+} else if (Object.keys(markers).length > 0) {
+    map.fitBounds(markerGroup.getBounds(), {padding: [50, 50]});
+} else {
+    map.setView([13.7563, 100.5018], 6);
+}
+
+function moveToMarker(id) { 
+    var m = markers[id]; 
+    if(m) { map.flyTo(m.getLatLng(), 15); m.openPopup(); } 
+}
+</script>
+</body>
+</html>

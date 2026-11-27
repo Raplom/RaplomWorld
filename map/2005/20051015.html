@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang='ja'>
+<head>
+<meta charset='utf-8'>
+<meta property="og:title" content="2005年10月15日の地図日記">
+<meta property="og:type" content="website">
+<title>2005年10月15日の地図日記</title>
+<link rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css' />
+<script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'></script>
+<style>
+    body { display: flex; height: 100vh; margin: 0; background: #111; font-family: sans-serif; }
+    #map { flex: 1; }
+    #sidebar { width: 200px; overflow-y: auto; background: #111; padding: 10px; border-left: 1px solid #333; }
+    .photo-thumb { margin-bottom: 10px; cursor: pointer; border: 2px solid transparent; min-height: 40px; background: #222; }
+    .photo-thumb:hover { border-color: #007bff; }
+    .photo-thumb img { width: 100%; border-radius: 4px; display: block; }
+    .thumb-label { color: #ccc; font-size: 12px; text-align: center; padding: 4px 2px; word-break: break-word; }
+</style>
+</head>
+<body>
+<div id='map'></div>
+<div id='sidebar'><div style='color:white; text-align:center; margin-bottom:15px;'>2005年10月15日</div><div class='photo-thumb'><img src='https://lek3map.github.io/thailand/picture/aruki.jpg' title='交通手段' alt='交通手段' onerror="this.style.display='none'"></div><div class='photo-thumb' onclick='moveToMarker(0)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051015004.jpg' title='Kanchanaburi Station' alt='Kanchanaburi Station' onerror="this.style.display='none'"><div class='thumb-label'>Kanchanaburi Station</div></div><div class='photo-thumb' onclick='moveToMarker(1)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051015003.jpg' title='Road signs' alt='Road signs' onerror="this.style.display='none'"><div class='thumb-label'>Road signs</div></div><div class='photo-thumb' onclick='moveToMarker(2)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051015062.jpg' title='Phra Mae Thorani' alt='Phra Mae Thorani' onerror="this.style.display='none'"><div class='thumb-label'>Phra Mae Thorani</div></div><div class='photo-thumb' onclick='moveToMarker(3)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051015088.jpg' title='Wat Ratchabopit' alt='Wat Ratchabopit' onerror="this.style.display='none'"><div class='thumb-label'>Wat Ratchabopit</div></div><div class='photo-thumb' onclick='moveToMarker(4)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051015133.jpg' title='Wat Suthat' alt='Wat Suthat' onerror="this.style.display='none'"><div class='thumb-label'>Wat Suthat</div></div><div class='photo-thumb' onclick='moveToMarker(5)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051015152.jpg' title='Giant Swing' alt='Giant Swing' onerror="this.style.display='none'"><div class='thumb-label'>Giant Swing</div></div><div class='photo-thumb' onclick='moveToMarker(6)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051015157.jpg' title='Vishnu Temple' alt='Vishnu Temple' onerror="this.style.display='none'"><div class='thumb-label'>Vishnu Temple</div></div><div class='photo-thumb' onclick='moveToMarker(7)'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051015193.jpg' title='Royal Pavilion' alt='Royal Pavilion' onerror="this.style.display='none'"><div class='thumb-label'>Royal Pavilion</div></div></div>
+<script>
+var map = L.map('map');
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+var markers = {};
+var markerGroup = L.featureGroup().addTo(map);
+var pathPoints = [];
+
+var icon_hyoushiki_png = L.icon({
+    iconUrl: 'https://lek3map.github.io/thailand/icon/hyoushiki.png',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30]
+});
+var icon_inori_png = L.icon({
+    iconUrl: 'https://lek3map.github.io/thailand/icon/inori.png',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30]
+});
+var icon_starr_png = L.icon({
+    iconUrl: 'https://lek3map.github.io/thailand/icon/starr.png',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30]
+});
+var icon_station_png = L.icon({
+    iconUrl: 'https://lek3map.github.io/thailand/icon/station.png',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30]
+});
+var icon_tera_png = L.icon({
+    iconUrl: 'https://lek3map.github.io/thailand/icon/tera.png',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30]
+});
+markers[0] = L.marker([14.033028, 99.526455], {icon: icon_station_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Kanchanaburi Station</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/051015004.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051015004.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>カンチャナブリ</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=14.033028,99.526455' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=14.033028,99.526455&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[1] = L.marker([14.031576, 99.527121], {icon: icon_hyoushiki_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Road signs</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/051015003.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051015003.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>カンチャナブリ</div><div style='text-align:left; margin-top:8px;'>道路標識</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=14.031576,99.527121' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=14.031576,99.527121&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[2] = L.marker([13.756565, 100.494905], {icon: icon_inori_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Phra Mae Thorani<br>อนุสาวรีย์พระแม่ธรณีบีบมวยผม</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/051015062.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051015062.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>バンコク</div><div style='text-align:left; margin-top:8px;'>母なる大地の女神像、サナーム・ルアンにやってくる人々のための水飲み場として、ラーマ５世王妃の手によって建てられました。　メー・トラニは瞑想中のブッダが魔物に襲われたときに地中から現れ、自分の髪を振り絞って洪水を起こし、魔物を流してブッダを守ったとされています。　水道局のシンボルマークになっています。</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=13.756565,100.494905' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=13.756565,100.494905&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[3] = L.marker([13.749161, 100.497329], {icon: icon_tera_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Wat Ratchabopit<br>วัดราชบพิธสถิตมหาสีมารามราชวรวิหาร</h3><a href='https://goo.gl/photos/3tj2gxRUkzgdFrVu5' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051015088.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>バンコク</div><div style='text-align:left; margin-top:8px;'>第一級王室仏教寺院</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=13.749161,100.497329' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=13.749161,100.497329&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[4] = L.marker([13.751078, 100.501084], {icon: icon_tera_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Wat Suthat<br>วัดสุทัศนเทพวรารามราชวรมหาวิหาร</h3><a href='https://goo.gl/photos/MEz49VbSxFKD2LZ17' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051015133.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>バンコク</div><div style='text-align:left; margin-top:8px;'>第一級王室仏教寺院 1807年に着工、当時この寺院はワット・マハースッターワートと名付けられたが、一般には大仏の寺院という意味でワット・プラヤイ、ワット・プラトーまた、寺の北にあるジャイアント・スイング（サオチンチャー）にちなんでワット・サオチンチャー とも呼ばれた、その後ラーマ3世の時代に現在の名称、ワット・スタットテープワララームに改められた。この名称はヒンドゥー教の天国のインドラのすむ町を表す、地獄壁画あり。</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=13.751078,100.501084' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=13.751078,100.501084&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[5] = L.marker([13.751813, 100.501285], {icon: icon_starr_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Giant Swing<br>เสาชิงช้า</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/051015152.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051015152.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>バンコク</div><div style='text-align:left; margin-top:8px;'>ラーマ１世の命により1784年に建造された総チーク材造りによる全高21メートルの大ブランコ、かっては旧暦の２月にヒンズー教の神への奉納として，バラモン僧が乗った大ブランコを揺する儀式が行われていましたが， 墜死する僧が後を絶たなかったことから，1935年にラーマ７世が儀式の禁止を命じたため現在この儀式は行われていません、なお現在のものは２００７年（ウロ覚え）に再建されたもの。</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=13.751813,100.501285' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=13.751813,100.501285&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[6] = L.marker([13.751453, 100.501857], {icon: icon_inori_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Vishnu Temple<br>พระวิษณุนารายณ์</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/051015157.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051015157.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>バンコク</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=13.751453,100.501857' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=13.751453,100.501857&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+markers[7] = L.marker([13.755593, 100.504542], {icon: icon_starr_png}).addTo(markerGroup).bindPopup("<div style='width:250px; text-align:center;'><h3 style='margin:10px 0 5px 0;'>Royal Pavilion<br>ลานพลับพลามหาเจษฎาบดินทร์</h3><a href='https://lek3map.github.io/thailand/map/2005/picture/051015193.jpg' target='_blank'><img src='https://lek3map.github.io/thailand/map/2005/thumbs/051015193.jpg' style='width:100%; border-radius:4px;'></a><div style='color:#666; font-size:1.1em;'>バンコク</div><hr style='border:0; border-top:1px solid #eee;'><a href='https://www.google.com/maps?q=13.755593,100.504542' target='_blank' style='font-weight:bold;'>📍 Google Maps</a>　<a href='https://www.google.com/maps?q=13.755593,100.504542&hl=th' target='_blank' style='font-weight:bold;'>タイ語</a></div>");
+
+if (pathPoints.length > 0) {
+    var polyline = L.polyline(pathPoints, {color: '#ff0000', weight: 4, opacity: 0.8}).addTo(map);
+    map.fitBounds(polyline.getBounds(), {padding: [30, 30]});
+} else if (Object.keys(markers).length > 0) {
+    map.fitBounds(markerGroup.getBounds(), {padding: [50, 50]});
+} else {
+    map.setView([13.7563, 100.5018], 6);
+}
+
+function moveToMarker(id) { 
+    var m = markers[id]; 
+    if(m) { map.flyTo(m.getLatLng(), 15); m.openPopup(); } 
+}
+</script>
+</body>
+</html>
