@@ -110,10 +110,22 @@
     .leaflet-popup-content {
       margin: 10px 12px;
     }
+  
+    .menu-btn {
+      position: absolute; top: 12px; right: 12px; z-index: 1100;
+      background: white; border: 1px solid #ccc; border-radius: 8px;
+      padding: 8px 14px; font-size: 13px; font-weight: 600;
+      color: #4a3728; text-decoration: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      font-family: "Hiragino Sans", Meiryo, sans-serif;
+    }
+    .menu-btn:hover { background: #f5f0e8; }
+    
   </style>
 </head>
 <body>
-  <div id="map"></div>
+  <a class="menu-btn" href="index.html">☰ メニュー</a>
+<div id="map"></div>
   <div class="info-panel">
     <h3>タイ移動履歴</h3>
     <div id="count">読み込み中...</div>
