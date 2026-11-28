@@ -137,8 +137,9 @@
 
       // Thumbnail: try local map/2026/thumbs/ first, then map/2026/picture/, fallback to link
       if (p.image) {
-        const thumbSrc = 'map/2026/thumbs/' + p.image;
-        const fullSrc = 'map/2026/picture/' + p.image;
+        const yearFolder = p.year ? String(p.year) : 'unknown';
+        const thumbSrc = 'map/' + yearFolder + '/thumbs/' + p.image;
+        const fullSrc = 'map/' + yearFolder + '/picture/' + p.image;
         const href = p.link || fullSrc;
         html += '<a href="' + escapeHtml(href) + '" target="_blank" rel="noopener">';
         html += '<img class="popup-thumb" src="' + escapeHtml(thumbSrc) + '" alt="" '
