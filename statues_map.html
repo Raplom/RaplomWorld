@@ -156,8 +156,16 @@
       html += '<div class="name">' + escapeHtml(p.name) + '</div>';
       if (p.tname) html += '<div class="tname">' + escapeHtml(p.tname) + '</div>';
       html += '<div class="place">' + escapeHtml(p.place) + '</div>';
-      if (p.link) {
-        html += '<a href="' + escapeHtml(p.link) + '" target="_blank" rel="noopener" class="popup-image-placeholder">📷 写真を見る<br><span style="font-size:11px">' + escapeHtml(p.image||'') + '</span></a>';
+      if (p.image) {
+        const thumbSrc = 'map/2026/thumbs/' + p.image;
+        const fullSrc = 'map/2026/picture/' + p.image;
+        const href = p.link || fullSrc;
+        html += '<a href="' + escapeHtml(href) + '" target="_blank" rel="noopener">';
+        html += '<img src="' + escapeHtml(thumbSrc) + '" style="width:240px;max-height:180px;object-fit:cover;margin:8px auto;display:block;border-radius:4px;box-shadow:0 1px 4px rgba(0,0,0,0.2);" '
+             + 'onerror="this.onerror=null;this.src=\'' + escapeHtml(fullSrc) + '\';this.onerror=function(){this.style.display=\'none\';};" />';
+        html += '</a>';
+      } else if (p.link) {
+        html += '<a href="' + escapeHtml(p.link) + '" target="_blank" rel="noopener" class="popup-image-placeholder">📷 写真を見る</a>';
       }
       if (p.date) html += '<div class="date">' + escapeHtml(p.date) + '</div>';
       html += '</div>';
